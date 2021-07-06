@@ -304,7 +304,7 @@ int * __errno_location(void){
 // }
 
 void usleep(unsigned long useconds) {
-  sleep(useconds / 1e5);
+  sleep(useconds / 100000);
 }
 
 // TODO
@@ -550,6 +550,12 @@ execve(const char *pathname, char *const argv[], char *const envp[])
 // TODO
 int
 execlp(const char *file, const char *arg, .../*, (char *) NULL */)
+{
+  return 0;
+}
+
+unsigned int
+alarm(unsigned int seconds)
 {
   return 0;
 }

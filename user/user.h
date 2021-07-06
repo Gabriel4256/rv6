@@ -35,7 +35,6 @@ int getpagesize(void);
 int waitpid(int pid, int *stat_loc, int options);
 int getppid(void);
 off_t lseek(int fildes, off_t offset, int whence);
-// char* getenv(const char *varname);
 int gettimeofday(struct timeval *__restrict__ tp,
                 struct timezone *__restrict__ tzp);
 
@@ -65,6 +64,42 @@ void usleep(unsigned long useconds);
 // <signal.h>
 typedef void (*sighandler_t)(int);
 sighandler_t signal(int signum, sighandler_t handler);
+unsigned int alarm(unsigned int seconds);
 
 // <unistd.h>
 int fsync(int fildes);
+char* getenv(const char *varname);
+
+// <stdio.h>
+void perror(const char *s);
+int sscanf(const char *buffer, const char *format, ...);
+int sprintf(char *buffer, const char *format_string, ...);
+
+// <stdlib.h>
+double atof(const char *string);
+void *valloc(size_t size);
+void srand(unsigned int seed);
+void qsort(void *base, size_t num, size_t width,
+    int(*compare)(const void *element1, const void *element2));
+void *realloc(void *ptr, size_t size);
+
+# define __FDS_BITS(set) ((set)->__fds_bits)
+#define FD_ZERO(set) \
+  do {									      \
+    unsigned int __i;							      \
+    fd_set *__arr = (set);						      \
+    for (__i = 0; __i < sizeof (fd_set) / sizeof (__fd_mask); ++__i)	      \
+      __FDS_BITS (__arr)[__i] = 0;					      \
+  } while (0)
+
+#define __NFDBITS	(8 * (int) sizeof (__fd_mask))
+#define	__FD_ELT(d)	((d) / __NFDBITS)
+#define	__FD_MASK(d)	((__fd_mask) (1UL << ((d) % __NFDBITS)))
+
+#define FD_SET(d, set) \
+  ((void) (__FDS_BITS (set)[__FD_ELT (d)] |= __FD_MASK (d)))
+
+#define FD_ISSET(d, s) \
+  ((__FDS_BITS (s)[__FD_ELT (d)] & __FD_MASK (d)) != 0)
+
+#define L_tmpnam 20

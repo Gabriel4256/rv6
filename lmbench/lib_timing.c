@@ -29,7 +29,7 @@
 #define	KB	(1000.0)
 
 static struct timeval 	start_tv, stop_tv;
-FILE			*ftiming;
+int			ftiming;
 static volatile uint64	use_result_dummy;
 static		uint64	iterations;
 static		void	init_timing(void);
@@ -109,7 +109,7 @@ void
 benchmp_sigalrm(int signo)
 {
 	signal(SIGALRM, SIG_IGN);
-	kill(benchmp_sigalrm_pid, SIGTERM);
+	kill(benchmp_sigalrm_pid);
 	/* 
 	 * Since we already waited a full timeout period for the child
 	 * to die, we only need to wait a little longer for subsequent
@@ -282,7 +282,7 @@ error_exit:
 	/* give the children a chance to clean up gracefully */
 	signal(SIGCHLD, SIG_DFL);
 	while (--i >= 0) {
-		kill(pids[i], SIGTERM);
+		kill(pids[i]);
 		waitpid(pids[i], NULL, 0);
 	}
 
@@ -365,7 +365,7 @@ benchmp_parent(	int response,
 
 		timeout.tv_sec = 1;
 		timeout.tv_usec = 0;
-		select(response+1, &fds_read, NULL, &fds_error, &timeout);
+		posix_select(response+1, &fds_read, NULL, &fds_error, &timeout);
 		if (benchmp_sigchld_received 
 		    || benchmp_sigterm_received
 		    || FD_ISSET(response, &fds_error)) 
@@ -394,7 +394,7 @@ benchmp_parent(	int response,
 		delay.tv_sec = warmup / 1000000;
 		delay.tv_usec = warmup % 1000000;
 
-		select(0, NULL, NULL, NULL, &delay);
+		posix_select(0, NULL, NULL, NULL, &delay);
 	}
 
 	/* send 'start' signal */
@@ -410,7 +410,7 @@ benchmp_parent(	int response,
 
 		timeout.tv_sec = 1;
 		timeout.tv_usec = 0;
-		select(response+1, &fds_read, NULL, &fds_error, &timeout);
+		posix_select(response+1, &fds_read, NULL, &fds_error, &timeout);
 		if (benchmp_sigchld_received 
 		    || benchmp_sigterm_received
 		    || FD_ISSET(response, &fds_error)) 
@@ -452,7 +452,7 @@ benchmp_parent(	int response,
 
 			timeout.tv_sec = 1;
 			timeout.tv_usec = 0;
-			select(response+1, &fds_read, NULL, &fds_error, &timeout);
+			posix_select(response+1, &fds_read, NULL, &fds_error, &timeout);
 			if (benchmp_sigchld_received 
 			    || benchmp_sigterm_received
 			    || FD_ISSET(response, &fds_error)) 
@@ -496,7 +496,7 @@ error_exit:
 #endif
 	signal(SIGCHLD, SIG_DFL);
 	for (i = 0; i < parallel; ++i) {
-		kill(pids[i], SIGTERM);
+		kill(pids[i]);
 		waitpid(pids[i], NULL, 0);
 	}
 	free(merged_results);
@@ -686,7 +686,7 @@ benchmp_interval(void* _state)
 	case warmup:
 		iterations = state->iterations_batch;
 		FD_SET(state->start_signal, &fds);
-		select(state->start_signal+1, &fds, NULL,
+		posix_select(state->start_signal+1, &fds, NULL,
 		       NULL, &timeout);
 		if (FD_ISSET(state->start_signal, &fds)) {
 			state->state = timing_interval;
@@ -733,7 +733,7 @@ benchmp_interval(void* _state)
 	case cooldown:
 		iterations = state->iterations_batch;
 		FD_SET(state->result_signal, &fds);
-		select(state->result_signal+1, &fds, NULL, NULL, &timeout);
+		posix_select(state->result_signal+1, &fds, NULL, NULL, &timeout);
 		if (FD_ISSET(state->result_signal, &fds)) {
 			/* 
 			 * At this point all children have stopped their
@@ -766,7 +766,7 @@ benchmp_interval(void* _state)
  * Redirect output someplace else.
  */
 void
-timing(FILE *out)
+timing(int out)
 {
 	ftiming = out;
 }
@@ -1677,7 +1677,7 @@ cp(char* src, char* dst, mode_t mode)
 	if ((sfd = open(src, O_RDONLY)) < 0) {
 		return -1;
 	}
-	if ((dfd = open(dst, O_CREAT|O_TRUNC|O_RDWR, mode)) < 0) {
+	if ((dfd = open(dst, O_CREAT|O_TRUNC|O_RDWR)) < 0) {
 		return -1;
 	}
 	while ((size = read(sfd, buf, 8192)) > 0) {

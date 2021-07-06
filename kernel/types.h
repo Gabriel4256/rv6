@@ -42,6 +42,8 @@ typedef unsigned long u_long;
 typedef long int __fd_mask;
 #define __NFDBITS	(8 * (int) sizeof (__fd_mask))
 
+// #define O_CREAT O_CREATE
+
 #ifndef _SYS_SELECT_H
 typedef struct fd_set{
   __fd_mask __fds_bits[__FD_SETSIZE / __NFDBITS];
@@ -54,5 +56,23 @@ struct timezone {
 };
 
 typedef __mode_t mode_t;
+
+
+
+#define	SIGKILL	9	/* kill (cannot be caught or ignored) */
+#define	SIGALRM	14	/* alarm clock */
+#define	SIGTERM	15	/* software termination signal from kill */
+#define	SIGCHLD	20	/* to parent on child stop or exit */
+#define SIGUSR1 30	/* user defined signal 1 */
+
+typedef void (*sighandler_t)(int);
+#define	SIG_ERR	 ((sighandler_t) -1)	/* Error return.  */
+#define	SIG_DFL	 ((sighandler_t)  0)	/* Default action.  */
+#define	SIG_IGN	 ((sighandler_t)  1)	/* Ignore signal.  */
+
+#ifndef __pid_t_defined
+typedef uint pid_t;
+#define __pid_t_defined
+#endif
 
 #endif

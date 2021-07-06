@@ -2,6 +2,7 @@
     "files.associations": {
         "user.h": "c",
         "types.h": "c",
-        "struct_timeval.h": "c"
+        "struct_timeval.h": "c",
+        "cstdio": "c"
     }
 }

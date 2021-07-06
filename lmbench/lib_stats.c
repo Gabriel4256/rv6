@@ -1,3 +1,5 @@
+#define NDEF_RAND
+
 #include <math.h>
 #include "bench.h"
 

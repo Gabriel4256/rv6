@@ -38,7 +38,7 @@ cleanup(iter_t iterations, void* cookie)
 	if (iterations) return;
 
 	if (child_pid) {
-		kill(child_pid, SIGKILL);
+		kill(child_pid);
 		waitpid(child_pid, NULL, 0);
 		child_pid = 0;
 	}

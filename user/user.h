@@ -83,6 +83,30 @@ void qsort(void *base, size_t num, size_t width,
     int(*compare)(const void *element1, const void *element2));
 void *realloc(void *ptr, size_t size);
 
+double strtod(const char * string, char **endPtr);
+long int strtol(const char *nptr, char **endptr, int base);
+
+// <assert.h>
+void assert(int expression);
+
+// <ctype.h>
+int isdigit(int arg);
+
+
+int creat(const char *path, mode_t mode);
+char *strdup(const char *s);
+int execlp(const char *file, const char *arg, .../*, (char *) NULL */);
+int execve(const char *pathname, char *const argv[],
+            char *const envp[]);
+int rmdir(const char *pathname);
+char *tempnam(const char *dir, const char *pfx);
+int fflush(int stream);
+int putenv(char *string);
+
+#ifdef NDEF_RAND
+int rand(void);
+#endif
+
 # define __FDS_BITS(set) ((set)->__fds_bits)
 #define FD_ZERO(set) \
   do {									      \

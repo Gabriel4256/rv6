@@ -12,6 +12,7 @@
  * Support for this development by Sun Microsystems is gratefully acknowledged.
  */
 
+#define NDEF_RAND
 #include "bench.h"
 
 #define	FIVE(m)		m m m m m

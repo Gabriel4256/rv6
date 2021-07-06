@@ -2,28 +2,28 @@
 
 /* #define _DEBUG */
 
-#if defined(HAVE_SYSMP)
-#include <sys/sysmp.h>
-#include <sys/sysinfo.h>
-#endif
+// #if defined(HAVE_SYSMP)
+// #include <sys/sysmp.h>
+// #include <sys/sysinfo.h>
+// #endif
 
-#if defined(HAVE_MPCTL)
-#include <sys/mpctl.h>
-#endif
+// #if defined(HAVE_MPCTL)
+// #include <sys/mpctl.h>
+// #endif
 
-#if defined(HAVE_BINDPROCESSOR)
-#include <sys/processor.h>
-#endif
+// #if defined(HAVE_BINDPROCESSOR)
+// #include <sys/processor.h>
+// #endif
 
-#if defined(HAVE_PROCESSOR_BIND)
-#include <sys/types.h>
-#include <sys/processor.h>
-#include <sys/procset.h>
-#endif
+// #if defined(HAVE_PROCESSOR_BIND)
+// #include <sys/types.h>
+// #include <sys/processor.h>
+// #include <sys/procset.h>
+// #endif
 
-#if defined(HAVE_SCHED_SETAFFINITY)
-#include <sched.h>
-#endif
+// #if defined(HAVE_SCHED_SETAFFINITY)
+// #include <sched.h>
+// #endif
 
 extern int custom(char* str, int cpu);
 extern int reverse_bits(int cpu);

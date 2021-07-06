@@ -554,6 +554,7 @@ execlp(const char *file, const char *arg, .../*, (char *) NULL */)
   return 0;
 }
 
+// nothing to do
 unsigned int
 alarm(unsigned int seconds)
 {

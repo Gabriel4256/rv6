@@ -14,7 +14,10 @@
  * Support for this development by Sun Microsystems is gratefully acknowledged.
  */
 #define	 _LIB /* bench.h needs this */
+#define NDEF_RAND
 #include "bench.h"
+#include "user/rand.c"
+
 
 /* #define _DEBUG */
 
@@ -45,6 +48,7 @@ static		void	init_timing(void);
 
 static struct rusage ru_start, ru_stop;
 
+ffddfd
 void
 rusage(void)
 {

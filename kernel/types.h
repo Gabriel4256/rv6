@@ -42,7 +42,15 @@ typedef unsigned long u_long;
 typedef long int __fd_mask;
 #define __NFDBITS	(8 * (int) sizeof (__fd_mask))
 
-// #define O_CREAT O_CREATE
+// TODO: IS this okay?
+#define S_IREAD 0
+#ifndef S_IWUSR
+#define S_IWUSR 0
+#endif
+
+#ifndef S_IFIFO
+#define S_IFIFO 0010000
+#endif
 
 #ifndef _SYS_SELECT_H
 typedef struct fd_set{

@@ -37,6 +37,7 @@ void fill(iter_t iterations, void* cookie);
 void daxpy(iter_t iterations, void* cookie);
 void sum(iter_t iterations, void* cookie);
 
+#define UNUSED(x) (void)(x)
 
 /*
  * Assumptions:
@@ -204,6 +205,9 @@ initialize(iter_t iterations, void* cookie)
 	register double* b = state->b;					\
 	register double* c = state->c;					\
 	register double scalar = state->scalar;				\
+	UNUSED(b);						\
+	UNUSED(c);						\
+	UNUSED(scalar);						\
 									\
 	state->a = state->b;						\
 	state->b = state->c;						\

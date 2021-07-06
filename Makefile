@@ -119,7 +119,7 @@ $(KR)/target/$(RUST_TARGET)/$(RUST_MODE)/librv6_kernel.a: $(shell find $(KR) -ty
 tags: $(OBJS) _init
 	etags *.S *.c
 
-ULIB = $U/ulib.o $U/usys.o $U/printf.o $U/umalloc.o
+ULIB = $U/ulib.o $U/usys.o $U/printf.o $U/umalloc.o $U/string.o $U/rand.o
 
 _%: %.o $(ULIB)
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^
@@ -142,7 +142,8 @@ $U/_forktest: $U/forktest.o $(ULIB)
 $(LM)/%.o: $(LM)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-$U/_%: $(LM)/%.o $(ULIB)
+
+$U/_%: $(LM)/%.o $(ULIB) $(LM)/lmbench.a
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $@ $^ $(LM)/lmbench.a
 	$(OBJDUMP) -S $@ > $*.asm
 	$(OBJDUMP) -t $@ | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $*.sym
@@ -212,6 +213,24 @@ UPROGS=\
 	$U/_wc\
 	$U/_zombie\
 	$U/_msleep\
+	$U/_bw_file_rd\
+	$U/_bw_mem\
+	$U/_bw_pipe\
+	$U/_lat_ctx\
+	$U/_lat_fifo\
+	$U/_lat_fs\
+	$U/_lat_mem_rd\
+	# $U/_lat_ops\
+	# $U/_lat_pipe\
+	# $U/_lat_proc\
+	# $U/_lat_syscall\
+	# $U/_mhz\
+	# $U/_tlb\
+	# $U/_line\
+	# $U/_cache\
+	# $U/_stream\
+	# $U/_par_mem\
+	# $U/_par_ops\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
@@ -225,7 +244,8 @@ clean:
 	$U/initcode $U/initcode.out $K/kernel fs.img \
 	mkfs/mkfs .gdbinit \
         $U/usys.S \
-	$(UPROGS)
+	$(UPROGS) \
+	$(LM)/*.[oasd]
 	cargo clean --manifest-path $(KR)/Cargo.toml
 
 # try to generate a unique GDB port

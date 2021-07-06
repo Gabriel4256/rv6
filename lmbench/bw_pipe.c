@@ -84,7 +84,7 @@ cleanup(iter_t iterations, void * cookie)
 
 	close(state->readfd);
 	if (state->pid > 0) {
-		kill(state->pid, SIGKILL);
+		kill(state->pid);
 		waitpid(state->pid, NULL, 0);
 	}
 	state->pid = 0;

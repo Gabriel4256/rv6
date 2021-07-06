@@ -706,7 +706,7 @@ fixup_chunk(size_t i, size_t chunk, size_t npages, size_t* pages,
 void
 check_memory(size_t size, struct mem_state* state)
 {
-	size_t	i, j, first_page, npages, nwords;
+	size_t	j, first_page, npages, nwords;
 	size_t	page, word_count, pagesize;
 	off_t	offset;
 	char	**p, **q;

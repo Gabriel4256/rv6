@@ -88,3 +88,20 @@ malloc(uint nbytes)
         return 0;
   }
 }
+
+// TODO: make this more efficient
+void*
+realloc(void *ptr, size_t size)
+{
+  free(ptr);
+  return malloc(size);
+}
+
+// allocate page size aligned heap memory
+void*
+valloc(size_t size)
+{
+  int pgsize = getpagesize();
+  size_t aligned_size = (size / pgsize + 1) * pgsize; 
+  return malloc(aligned_size);
+}

@@ -8,15 +8,15 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 #include "kernel/fcntl.h"
-#include "rand.h"
+// #include "rand.h"
 
 // #ifdef WIN32
 // #include <windows.h>
 // typedef unsigned char bool_t;
 // #endif
 
-#include	<assert.h>
-#include        <ctype.h>
+// #include	<assert.h>
+// #include        <ctype.h>
 // #include        <stdio.h>
 #include	<math.h>
 // #ifndef WIN32
@@ -65,6 +65,10 @@ typedef unsigned int uint;
 #endif
 #ifndef S_IEXEC
 #define S_IEXEC S_IXUSR
+#endif
+
+#ifndef O_CREAT
+#define O_CREAT O_CREATE
 #endif
 
 #ifndef HAVE_uint64

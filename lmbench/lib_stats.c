@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include "bench.h"
+#include "user/rand.h"
 
 #define BOOTSTRAP_COUNT	200
 

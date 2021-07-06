@@ -1,9 +1,20 @@
-#include "user/user.h"
-// #include "user/rand.h"
+#include "user/rand.h"
 
-#ifdef NDEF_RAND
-// TODO
+static unsigned long next = 1;
+
+
+// #ifdef NDEF_RAND
+// // TODO
 int rand(void) {
-    return 0;
+    // return 0;
+    next = next * 1103515245 + 12345;
+    return((unsigned)(next/65536) % 32768);
 }
-#endif
+// #endif
+
+// #ifndef SRAND_DEF
+// #define SRAND_DEF
+void srand(unsigned seed) {
+    next = seed;
+}
+// #endif

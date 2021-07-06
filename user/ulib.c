@@ -327,11 +327,6 @@ char *tempnam(const char *dir, const char *pfx) {
   return 0;
 }
 
-// TODO
-void srand(unsigned seed) {
-  return;
-}
-
 int posix_select(int nfds, fd_set *restrict readfds,
             fd_set *restrict writefds, fd_set *restrict exceptfds,
             struct timeval* timeout)
@@ -529,10 +524,15 @@ void qsort(void *base, size_t total_elems, size_t size,
   }
 }
 
-// TODO
+// simple implementation of newton's algorithm
 double sqrt(double x)
 {
-  return 1.0f;
+  int i;
+  double z = 1.0;
+  for(i = 1; i <= 10; i++){
+    z -= (z*z - x) / (2*z); // MAGIC LINE!!
+  }
+  return z;
 }
 
 // don't implement now

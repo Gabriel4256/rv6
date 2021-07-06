@@ -78,7 +78,13 @@ int sprintf(char *buffer, const char *format_string, ...);
 // <stdlib.h>
 double atof(const char *string);
 void *valloc(size_t size);
-void srand(unsigned int seed);
+
+
+// #ifndef SRAND_DEF
+// #define SRAND_DEF
+// void srand(unsigned int seed);
+// #endif
+
 void qsort(void *base, size_t num, size_t width,
     int(*compare)(const void *element1, const void *element2));
 void *realloc(void *ptr, size_t size);
@@ -103,9 +109,10 @@ char *tempnam(const char *dir, const char *pfx);
 int fflush(int stream);
 int putenv(char *string);
 
-#ifdef NDEF_RAND
-int rand(void);
-#endif
+// #ifndef RAND_DEFINED
+// #define RAND_DEFINED
+// int rand(void);
+// #endif
 
 # define __FDS_BITS(set) ((set)->__fds_bits)
 #define FD_ZERO(set) \

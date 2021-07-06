@@ -13,11 +13,10 @@
  * (2) the version in the sccsid below is included in the report.
  * Support for this development by Sun Microsystems is gratefully acknowledged.
  */
+#define NDEF_RAND 0
 #define	 _LIB /* bench.h needs this */
-#define NDEF_RAND
 #include "bench.h"
-#include "user/rand.c"
-
+#include "user/rand.h"
 
 /* #define _DEBUG */
 

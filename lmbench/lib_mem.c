@@ -14,6 +14,7 @@
 
 #define NDEF_RAND
 #include "bench.h"
+#include "user/rand.h"
 
 #define	FIVE(m)		m m m m m
 #define	TEN(m)		FIVE(m) FIVE(m)

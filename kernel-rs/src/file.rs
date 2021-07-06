@@ -71,6 +71,13 @@ pub struct Devsw {
 /// A reference counted smart pointer to a `File`.
 pub type RcFile = ArenaRc<FileTable>;
 
+// Events for `select`
+pub enum SelectEvent {
+    Read,
+    _Write,
+    _Error,
+}
+
 impl Default for FileType {
     fn default() -> Self {
         Self::None

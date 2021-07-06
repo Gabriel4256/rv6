@@ -24,6 +24,9 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int poweroff(int) __attribute__((noreturn));
+int select(int nfds, fd_set *restrict readfds,
+            fd_set *restrict writefds, fd_set *restrict exceptfds,
+            int timeout);
 
 // ulib.c
 int stat(const char*, struct stat*);

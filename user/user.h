@@ -1,3 +1,5 @@
+#include <kernel/types.h>
+
 struct stat;
 struct rtcdate;
 
@@ -58,3 +60,11 @@ void *memcpy(void *, const void *, uint);
 int posix_select(int nfds, fd_set *restrict readfds,
             fd_set *restrict writefds, fd_set *restrict exceptfds,
             struct timeval* timeout);
+void usleep(unsigned long useconds);
+
+// <signal.h>
+typedef void (*sighandler_t)(int);
+sighandler_t signal(int signum, sighandler_t handler);
+
+// <unistd.h>
+int fsync(int fildes);

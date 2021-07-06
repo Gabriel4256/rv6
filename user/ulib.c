@@ -262,9 +262,6 @@ int fsync(int fildes)
   return 0;
 }
 
-// TODO
-
-
 // bool_t
 // pmap_set (ulong program, ulong version, int protocol, ushort port)
 // {
@@ -307,24 +304,12 @@ void usleep(unsigned long useconds) {
   sleep(useconds / 100000);
 }
 
-// TODO
 int creat(const char *path, mode_t mode){
-  return 0;
+  return open(path, O_CREATE | O_WRONLY | O_TRUNC);
 }
 
-// TODO
-char *strdup(const char *s) {
-  return 0;
-}
-
-// TODO
 int rmdir(const char *pathname) {
-  return 0;
-}
-
-// TODO
-char *tempnam(const char *dir, const char *pfx) {
-  return 0;
+  return unlink(pathname);
 }
 
 int posix_select(int nfds, fd_set *restrict readfds,
@@ -544,15 +529,15 @@ int fflush(int stream) {
 int
 execve(const char *pathname, char *const argv[], char *const envp[])
 {
-  return 0;
+  return exec((char*)pathname, (char**)argv);
 }
 
-// TODO
-int
-execlp(const char *file, const char *arg, .../*, (char *) NULL */)
-{
-  return 0;
-}
+// int
+// execlp(const char *file, const char *arg, .../*, (char *) NULL */)
+// {
+
+//   return exec((char*)file, arg);
+// }
 
 // nothing to do
 unsigned int

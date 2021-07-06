@@ -1,5 +1,6 @@
 #include "user/user.h"
 #include <limits.h>
+#include "kernel/param.h"
 
 typedef unsigned long uintptr_t;
 
@@ -229,4 +230,27 @@ strtod (const char *str, char **ptr)
   /* Didn't find any digits.  Doesn't look like a number.  */
   *ptr = (char*)str;
   return 0.0;
+}
+
+char *strdup(const char *s) {
+  char *str;
+  char *p;
+  int len = 0;
+
+  while (s[len])
+      len++;
+  str = malloc(len + 1);
+  p = str;
+  while (*s)
+      *p++ = *s++;
+  *p = '\0';
+  return str;
+}
+
+static int tmp_cnt = 0;
+
+char *tempnam(const char *dir, const char *pfx) {
+  char buf[MAXPATH];
+  sprintf(buf, "./tmpfile%d", tmp_cnt++);
+  return strdup(buf);
 }

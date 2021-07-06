@@ -100,6 +100,8 @@ main(int ac, char **av)
 void 
 do_shell(iter_t iterations, void* cookie)
 {
+	char* argv[6];
+
 	signal(SIGCHLD, SIG_DFL);
 	handle_scheduler(benchmp_childid(), 0, 1);
 	while (iterations-- > 0) {
@@ -111,7 +113,12 @@ do_shell(iter_t iterations, void* cookie)
 		case 0:	/* child */
 			handle_scheduler(benchmp_childid(), 1, 1);
 			close(1);
-			execlp("/bin/sh", "sh", "-c", PROG, 0);
+			argv[0] = "sh";
+			argv[1] = "-c";
+			argv[2] =  PROG;
+			argv[3] = '\0';
+			// execlp("/bin/sh", "sh", "-c", PROG, 0);
+			execve(argv[0], argv, 0);
 			exit(1);
 
 		default:

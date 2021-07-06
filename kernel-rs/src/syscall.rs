@@ -14,11 +14,11 @@ use crate::{
         addr::{Addr, UVAddr},
         poweroff,
     },
-    file::{FileType, RcFile, SelectEvent},
+    file::{FileType, RcFile, SelectEvent, SeekWhence},
     fs::{FcntlFlags, FileSystem, InodeType, Path},
     hal::hal,
     ok_or,
-    page::Page,
+    page::{Page, getpagesize},
     param::{MAXARG, MAXPATH},
     proc::{CurrentProc, KernelCtx},
     some_or,
@@ -122,6 +122,10 @@ impl KernelCtx<'_, '_> {
             21 => self.sys_close(),
             22 => self.sys_poweroff(),
             23 => self.sys_select(),
+            24 => self.sys_getpagesize(),
+            25 => self.sys_waitpid(),
+            26 => self.sys_getppid(),
+            27 => self.sys_lseek(),
             _ => {
                 self.kernel().as_ref().write_fmt(format_args!(
                     "{} {}: unknown sys call {}",
@@ -429,7 +433,7 @@ impl KernelCtx<'_, '_> {
                     .copy_in(&mut rfds, read_fds.into())
             }?;
         }
-
+        
         if write_fds != 0 {
             unimplemented!("Handling for write fd set has not been implemented yet");
         }
@@ -455,7 +459,7 @@ impl KernelCtx<'_, '_> {
 
                 // TODO: support other kind of fd sets
                 if rfds[idx] & mask != 0 {
-                    if self.check_ready(fd as usize, SelectEvent::Read)? {
+                    if self.check(fd as usize, SelectEvent::Read)? {
                         ready_cnt += 1;
                     }
                 }
@@ -469,7 +473,7 @@ impl KernelCtx<'_, '_> {
         Ok(ready_cnt)
     }
 
-    fn check_ready(&mut self, fd: usize, event: SelectEvent) -> Result<bool, ()> {
+    fn check(&mut self, fd: usize, event: SelectEvent) -> Result<bool, ()> {
         let f = self
             .proc()
             .deref_data()
@@ -496,5 +500,33 @@ impl KernelCtx<'_, '_> {
         }
 
         Ok(false)
+    }
+
+    pub fn sys_getpagesize(&mut self) -> Result<usize, ()> {
+        Ok(getpagesize())
+    }
+
+    pub fn sys_waitpid(&mut self) -> Result<usize, ()> {
+        let pid = self.proc().argint(0)?;
+        let stat = self.proc().argaddr(1)?;
+        Ok(self.kernel().procs().waitpid(pid.into(), stat.into(), self)? as _)
+    }
+
+    pub fn sys_getppid(&mut self) -> Result<usize, ()> {
+        Ok(self.kernel().procs().getppid(self) as _)
+    }
+
+    pub fn sys_lseek(&mut self) -> Result<usize, ()> {
+        let (_, f) = self.proc().argfd(0)?;
+        let offset = self.proc().argint(1)?;
+        let whence = self.proc().argint(2)?;
+
+        let whence = match whence {
+            0 => SeekWhence::Set,
+            1 => SeekWhence::Cur,
+            2 => SeekWhence::End,
+            _ => return Err(())
+        };
+        unsafe { (*(f as *const RcFile)).lseek(offset, whence, self) }
     }
 }

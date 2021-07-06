@@ -24,9 +24,18 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int poweroff(int) __attribute__((noreturn));
+
+// newly added system calls
 int select(int nfds, fd_set *restrict readfds,
             fd_set *restrict writefds, fd_set *restrict exceptfds,
             int timeout);
+int getpagesize(void);
+int waitpid(int pid, int *stat_loc, int options);
+int getppid(void);
+off_t lseek(int fildes, off_t offset, int whence);
+// char* getenv(const char *varname);
+int gettimeofday(struct timeval *__restrict__ tp,
+                struct timezone *__restrict__ tzp);
 
 // ulib.c
 int stat(const char*, struct stat*);
@@ -44,3 +53,8 @@ void free(void*);
 int atoi(const char*);
 int memcmp(const void *, const void *, uint);
 void *memcpy(void *, const void *, uint);
+
+// newly added ulibs
+int posix_select(int nfds, fd_set *restrict readfds,
+            fd_set *restrict writefds, fd_set *restrict exceptfds,
+            struct timeval* timeout);

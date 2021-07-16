@@ -3,26 +3,28 @@
 
 #include "syscall.h"
 
-# exec(init, argv)
 .globl start
-start:
-        la a0, init
-        la a1, argv
-        li a7, SYS_exec
-        ecall
 
-# for(;;) exit();
+# exec(init, argv)
+start:
+    LDR     x1, =init
+    LDR     x2, =argv
+    MOV     x0, #SYS_exec
+    SVC     0x00
+
 exit:
-        li a7, SYS_exit
-        ecall
-        jal exit
+    MOV     x0, #SYS_exit
+    SVC     0x00
+    B       exit
 
 # char init[] = "/init\0";
 init:
-  .string "/init\0"
+    .string "/init\0"
 
 # char *argv[] = { init, 0 };
-.p2align 2
+.p2align 4
 argv:
-  .long init
-  .long 0
+    .word init
+    .word 0
+    .word 0
+    .word 0

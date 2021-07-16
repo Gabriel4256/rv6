@@ -8,11 +8,11 @@ use bitflags::bitflags;
 /// Which hart (core) is this?
 #[inline]
 pub fn r_mhartid() -> usize {
-    let mut x;
+    let mut x:usize;
     unsafe {
-        asm!("csrr {}, mhartid", out(reg) x);
+        asm!("mrs {}, mpidr_el1", out(reg) x);
     }
-    x
+    x & 0b11
 }
 
 bitflags! {
@@ -33,16 +33,17 @@ impl Mstatus {
     pub fn read() -> Self {
         let mut x;
         unsafe {
-            asm!("csrr {}, mstatus", out(reg) x);
+            // asm!("csrr {}, mstatus", out(reg) x);
+            asm!("mrs {}, mpidr_el1", out(reg) x);
         }
         Self::from_bits_truncate(x)
     }
 
     #[inline]
     pub unsafe fn write(self) {
-        unsafe {
-            asm!("csrw mstatus, {}", in(reg) self.bits());
-        }
+        // unsafe {
+        //     asm!("csrw mstatus, {}", in(reg) self.bits());
+        // }
     }
 }
 
@@ -51,9 +52,9 @@ impl Mstatus {
 /// exception will go.
 #[inline]
 pub unsafe fn w_mepc(x: usize) {
-    unsafe {
-        asm!("csrw mepc, {}", in(reg) x);
-    }
+    // unsafe {
+    //     asm!("csrw mepc, {}", in(reg) x);
+    // }
 }
 
 bitflags! {
@@ -82,16 +83,17 @@ impl Sstatus {
     pub fn read() -> Self {
         let mut x;
         unsafe {
-            asm!("csrr {}, sstatus", out(reg) x);
+            // asm!("csrr {}, sstatus", out(reg) x);
+            asm!("mrs {}, mpidr_el1", out(reg) x);
         }
         Self::from_bits_truncate(x)
     }
 
     #[inline]
     pub unsafe fn write(self) {
-        unsafe {
-            asm!("csrw sstatus, {}", in(reg) self.bits());
-        }
+        // unsafe {
+        //     asm!("csrw sstatus, {}", in(reg) self.bits());
+        // }
     }
 }
 
@@ -100,15 +102,16 @@ impl Sstatus {
 pub fn r_sip() -> usize {
     let mut x;
     unsafe {
-        asm!("csrr {}, sip", out(reg) x);
+        // asm!("csrr {}, sip", out(reg) x);
+        asm!("mrs {}, mpidr_el1", out(reg) x);
     }
     x
 }
 #[inline]
 pub unsafe fn w_sip(x: usize) {
-    unsafe {
-        asm!("csrw sip, {}", in(reg) x);
-    }
+    // unsafe {
+    //     asm!("csrw sip, {}", in(reg) x);
+    // }
 }
 
 bitflags! {
@@ -131,16 +134,17 @@ impl SIE {
     pub fn read() -> Self {
         let mut x;
         unsafe {
-            asm!("csrr {}, sie", out(reg) x);
+            // asm!("csrr {}, sie", out(reg) x);
+            asm!("mrs {}, mpidr_el1", out(reg) x);
         }
         Self::from_bits_truncate(x)
     }
 
     #[inline]
     pub unsafe fn write(self) {
-        unsafe {
-            asm!("csrw sie, {}", in(reg) self.bits());
-        }
+        // unsafe {
+        //     asm!("csrw sie, {}", in(reg) self.bits());
+        // }
     }
 }
 
@@ -165,16 +169,17 @@ impl MIE {
     pub fn read() -> Self {
         let mut x: usize;
         unsafe {
-            asm!("csrr {}, mie", out(reg) x);
+            // asm!("csrr {}, mie", out(reg) x);
+            asm!("mrs {}, mpidr_el1", out(reg) x);
         }
         Self::from_bits_truncate(x)
     }
 
     #[inline]
     pub unsafe fn write(self) {
-        unsafe {
-            asm!("csrw mie, {}", in(reg) self.bits());
-        }
+        // unsafe {
+        //     asm!("csrw mie, {}", in(reg) self.bits());
+        // }
     }
 }
 
@@ -183,16 +188,17 @@ impl MIE {
 /// exception will go.
 #[inline]
 pub unsafe fn w_sepc(x: usize) {
-    unsafe {
-        asm!("csrw sepc, {}", in(reg) x);
-    }
+    // unsafe {
+    //     asm!("csrw sepc, {}", in(reg) x);
+    // }
 }
 
 #[inline]
 pub fn r_sepc() -> usize {
     let mut x;
     unsafe {
-        asm!("csrr {}, sepc", out(reg) x);
+        // asm!("csrr {}, sepc", out(reg) x);
+        asm!("mrs {}, mpidr_el1", out(reg) x);
     }
     x
 }
@@ -202,16 +208,17 @@ pub fn r_sepc() -> usize {
 pub fn r_medeleg() -> usize {
     let mut x;
     unsafe {
-        asm!("csrr {}, medeleg", out(reg) x);
+        // asm!("csrr {}, medeleg", out(reg) x);
+        asm!("mrs {}, mpidr_el1", out(reg) x);
     }
     x
 }
 
 #[inline]
 pub unsafe fn w_medeleg(x: usize) {
-    unsafe {
-        asm!("csrw medeleg, {}", in(reg) x);
-    }
+    // unsafe {
+    //     asm!("csrw medeleg, {}", in(reg) x);
+    // }
 }
 
 /// Machine Interrupt Delegation.
@@ -219,32 +226,34 @@ pub unsafe fn w_medeleg(x: usize) {
 pub fn r_mideleg() -> usize {
     let mut x;
     unsafe {
-        asm!("csrr {}, mideleg", out(reg) x);
+        // asm!("csrr {}, mideleg", out(reg) x);
+        asm!("mrs {}, mpidr_el1", out(reg) x);
     }
     x
 }
 
 #[inline]
 pub unsafe fn w_mideleg(x: usize) {
-    unsafe {
-        asm!("csrw mideleg, {}", in(reg) x);
-    }
+    // unsafe {
+    //     asm!("csrw mideleg, {}", in(reg) x);
+    // }
 }
 
 /// Supervisor Trap-Vector Base Address
 /// low two bits are mode.
 #[inline]
 pub unsafe fn w_stvec(x: usize) {
-    unsafe {
-        asm!("csrw stvec, {}", in(reg) x);
-    }
+    // unsafe {
+    //     asm!("csrw stvec, {}", in(reg) x);
+    // }
 }
 
 #[inline]
 pub fn r_stvec() -> usize {
     let mut x;
     unsafe {
-        asm!("csrr {}, stvec", out(reg) x);
+        // asm!("csrr {}, stvec", out(reg) x);
+        asm!("mrs {}, mpidr_el1", out(reg) x);
     }
     x
 }
@@ -252,9 +261,9 @@ pub fn r_stvec() -> usize {
 /// Machine-mode interrupt vector.
 #[inline]
 pub unsafe fn w_mtvec(x: usize) {
-    unsafe {
-        asm!("csrw mtvec, {}", in(reg) x);
-    }
+    // unsafe {
+    //     asm!("csrw mtvec, {}", in(reg) x);
+    // }
 }
 
 /// Use riscv's sv39 page table scheme.
@@ -268,16 +277,17 @@ pub const fn make_satp(pagetable: usize) -> usize {
 /// holds the address of the page table.
 #[inline]
 pub unsafe fn w_satp(x: usize) {
-    unsafe {
-        asm!("csrw satp, {}", in(reg) x);
-    }
+    // unsafe {
+    //     asm!("csrw satp, {}", in(reg) x);
+    // }
 }
 
 #[inline]
 pub fn r_satp() -> usize {
     let mut x;
     unsafe {
-        asm!("csrr {}, satp", out(reg) x);
+        // asm!("csrr {}, satp", out(reg) x);
+        asm!("mrs {}, mpidr_el1", out(reg) x);
     }
     x
 }
@@ -285,16 +295,16 @@ pub fn r_satp() -> usize {
 /// Supervisor Scratch register, for early trap handler in trampoline.S.
 #[inline]
 pub unsafe fn w_sscratch(x: usize) {
-    unsafe {
-        asm!("csrw sscratch, {}", in(reg) x);
-    }
+    // unsafe {
+    //     asm!("csrw sscratch, {}", in(reg) x);
+    // }
 }
 
 #[inline]
 pub unsafe fn w_mscratch(x: usize) {
-    unsafe {
-        asm!("csrw mscratch, {}", in(reg) x);
-    }
+    // unsafe {
+    //     asm!("csrw mscratch, {}", in(reg) x);
+    // }
 }
 
 /// Supervisor Trap Cause.
@@ -302,7 +312,8 @@ pub unsafe fn w_mscratch(x: usize) {
 pub fn r_scause() -> usize {
     let mut x;
     unsafe {
-        asm!("csrr {}, scause", out(reg) x);
+        // asm!("csrr {}, scause", out(reg) x);
+        asm!("mrs {}, mpidr_el1", out(reg) x);
     }
     x
 }
@@ -312,7 +323,8 @@ pub fn r_scause() -> usize {
 pub fn r_stval() -> usize {
     let mut x;
     unsafe {
-        asm!("csrr {}, stval", out(reg) x);
+        // asm!("csrr {}, stval", out(reg) x);
+        asm!("mrs {}, mpidr_el1", out(reg) x);
     }
     x
 }
@@ -320,16 +332,17 @@ pub fn r_stval() -> usize {
 /// Machine-mode Counter-Enable.
 #[inline]
 pub unsafe fn w_mcounteren(x: u64) {
-    unsafe {
-        asm!("csrw mcounteren, {}", in(reg) x);
-    }
+    // unsafe {
+    //     asm!("csrw mcounteren, {}", in(reg) x);
+    // }
 }
 
 #[inline]
 pub fn r_mcounteren() -> u64 {
     let mut x;
     unsafe {
-        asm!("csrr {}, mcounteren", out(reg) x);
+        // asm!("csrr {}, mcounteren", out(reg) x);
+        asm!("mrs {}, mpidr_el1", out(reg) x);
     }
     x
 }
@@ -339,7 +352,8 @@ pub fn r_mcounteren() -> u64 {
 pub fn r_time() -> u64 {
     let mut x;
     unsafe {
-        asm!("csrr {}, time", out(reg) x);
+        // asm!("csrr {}, time", out(reg) x);
+        asm!("mrs {}, mpidr_el1", out(reg) x);
     }
     x
 }
@@ -373,7 +387,8 @@ pub fn intr_get() -> bool {
 pub fn r_tp() -> usize {
     let mut x;
     unsafe {
-        asm!("mv {}, tp", out(reg) x);
+        // asm!("mv {}, tp", out(reg) x);
+        asm!("mrs {}, mpidr_el1", out(reg) x);
     }
     x
 }
@@ -382,23 +397,23 @@ pub fn r_tp() -> usize {
 pub fn r_sp() -> usize {
     let mut x;
     unsafe {
-        asm!("mv {}, sp", out(reg) x);
+        asm!("mov {}, sp", out(reg) x);
     }
     x
 }
 
 #[inline]
 pub unsafe fn w_tp(x: usize) {
-    unsafe {
-        asm!("mv tp, {}", in(reg) x);
-    }
+    // unsafe {
+    //     asm!("mv tp, {}", in(reg) x);
+    // }
 }
 
 #[inline]
 pub fn r_ra() -> usize {
     let mut x;
     unsafe {
-        asm!("mv {}, ra", out(reg) x);
+        asm!("mov {}, ra", out(reg) x);
     }
     x
 }
@@ -406,8 +421,8 @@ pub fn r_ra() -> usize {
 /// Flush the TLB.
 #[inline]
 pub unsafe fn sfence_vma() {
-    unsafe {
-        // The zero, zero means flush all TLB entries.
-        asm!("sfence.vma zero, zero");
-    }
+    // unsafe {
+    //     // The zero, zero means flush all TLB entries.
+    //     asm!("sfence.vma zero, zero");
+    // }
 }

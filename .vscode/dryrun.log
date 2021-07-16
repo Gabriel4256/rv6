@@ -1,0 +1,12 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/kaist-cp-home/sunghwan.shim/rv6-ARM'
+ 
+make: Circular kernel-rs/target/aarch64-unknown-none/debug/librv6_kernel.a <- kernel-rs/target/aarch64-unknown-none/debug/librv6_kernel.a dependency dropped.
+ 
+cargo build --manifest-path kernel-rs/Cargo.toml --target kernel-rs/aarch64-unknown-none.json 
+ 
+aarch64-linux-gnu-ld -z max-page-size=4096 -T kernel/kernel.ld -o kernel/kernel kernel/entry.o kernel/swtch.o kernel/trampoline.o kernel/kernelvec.o kernel-rs/target/aarch64-unknown-none/debug/librv6_kernel.a 
+aarch64-linux-gnu-objdump -S kernel/kernel > kernel/kernel.asm
+aarch64-linux-gnu-objdump -t kernel/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > kernel/kernel.sym
+make: Leaving directory '/kaist-cp-home/sunghwan.shim/rv6-ARM'
+ 

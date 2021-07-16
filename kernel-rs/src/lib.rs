@@ -24,7 +24,7 @@
 #![deny(unused_qualifications)]
 #![deny(unused_results)]
 #![deny(variant_size_differences)]
-#![deny(warnings)]
+// #![deny(warnings)]
 //
 // # The following lints should not be denied.
 //

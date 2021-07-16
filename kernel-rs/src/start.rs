@@ -33,36 +33,36 @@ static mut TIMER_SCRATCH: [[usize; NCPU]; 5] = [[0; NCPU]; 5];
 #[no_mangle]
 pub unsafe fn start() {
     // set M Previous Privilege mode to Supervisor, for mret.
-    let mut x = Mstatus::read();
-    x.remove(Mstatus::MPP_MASK);
-    x.insert(Mstatus::MPP_S);
-    unsafe { x.write() };
+    // let mut x = Mstatus::read();
+    // x.remove(Mstatus::MPP_MASK);
+    // x.insert(Mstatus::MPP_S);
+    // unsafe { x.write() };
 
-    // set M Exception Program Counter to main, for mret.  requires gcc -mcmodel=medany
-    unsafe { w_mepc(main as usize) };
+    // // set M Exception Program Counter to main, for mret.  requires gcc -mcmodel=medany
+    // unsafe { w_mepc(main as usize) };
 
-    // disable paging for now.
-    unsafe { w_satp(0) };
+    // // disable paging for now.
+    // unsafe { w_satp(0) };
 
-    // delegate all interrupts and exceptions to supervisor mode.
-    unsafe { w_medeleg(0xffff) };
-    unsafe { w_mideleg(0xffff) };
-    let mut x = SIE::read();
-    x.insert(SIE::SEIE);
-    x.insert(SIE::STIE);
-    x.insert(SIE::SSIE);
-    unsafe { x.write() };
+    // // delegate all interrupts and exceptions to supervisor mode.
+    // unsafe { w_medeleg(0xffff) };
+    // unsafe { w_mideleg(0xffff) };
+    // let mut x = SIE::read();
+    // x.insert(SIE::SEIE);
+    // x.insert(SIE::STIE);
+    // x.insert(SIE::SSIE);
+    // unsafe { x.write() };
 
-    // ask for clock interrupts.
-    unsafe { timerinit() };
+    // // ask for clock interrupts.
+    // unsafe { timerinit() };
 
-    // keep each CPU's hartid in its tp register, for cpuid().
-    unsafe { w_tp(r_mhartid()) };
+    // // keep each CPU's hartid in its tp register, for cpuid().
+    // unsafe { w_tp(r_mhartid()) };
 
-    unsafe {
-        // switch to supervisor mode and jump to main().
-        asm!("mret");
-    }
+    // unsafe {
+    //     // switch to supervisor mode and jump to main().
+    //     asm!("mret");
+    // }
 }
 
 /// set up to receive timer interrupts in machine mode,

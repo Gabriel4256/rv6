@@ -10,11 +10,6 @@ SECTIONS
    */
   . = 0x40010000;
 
-
-
-  
-  __boot_core_stack_end_exclusive = .;
-
   .text : {
     *(.text .text.*)
     . = ALIGN(0x1000);

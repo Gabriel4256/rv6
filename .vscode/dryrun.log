@@ -1,130 +1,13 @@
-make --dry-run --always-make --keep-going --print-directory
+make --dry-run --keep-going --print-directory
 make: Entering directory '/kaist-cp-home/sunghwan.shim/rv6-ARM'
- 
-aarch64-none-elf-gcc    -c -o kernel/entry.o kernel/entry.S
-aarch64-none-elf-gcc    -c -o kernel/swtch.o kernel/swtch.S
-aarch64-none-elf-gcc    -c -o kernel/trampoline.o kernel/trampoline.S
-aarch64-none-elf-gcc    -c -o kernel/kernelvec.o kernel/kernelvec.S
  
 make: Circular kernel-rs/target/aarch64-unknown-none/debug/librv6_kernel.a <- kernel-rs/target/aarch64-unknown-none/debug/librv6_kernel.a dependency dropped.
  
 cargo build --manifest-path kernel-rs/Cargo.toml --target kernel-rs/aarch64-unknown-none.json 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie -march=armv8-a -mcpu=cortex-a57 -nostdinc -I. -Ikernel -c user/initcode.S -o user/initcode.o
-aarch64-none-elf-ld -z max-page-size=4096 -N -e start -Ttext 0 -o user/initcode.out user/initcode.o
-aarch64-none-elf-objcopy -S -O binary user/initcode.out user/initcode
-aarch64-none-elf-objdump -S user/initcode.o > user/initcode.asm
-gcc -Werror -Wall -I. -o mkfs/mkfs mkfs/mkfs.c
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/cat.o user/cat.c
  
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/ulib.o user/ulib.c
-perl user/usys.pl > user/usys.S
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie -c -o user/usys.o user/usys.S
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/printf.o user/printf.c
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/umalloc.o user/umalloc.c
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/string.o user/string.c
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/rand.o user/rand.c
- 
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_cat user/cat.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
-aarch64-none-elf-objdump -S user/_cat > user/cat.asm
-aarch64-none-elf-objdump -t user/_cat | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/cat.sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/echo.o user/echo.c
- 
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_echo user/echo.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
-aarch64-none-elf-objdump -S user/_echo > user/echo.asm
-aarch64-none-elf-objdump -t user/_echo | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/echo.sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/forktest.o user/forktest.c
- 
-# forktest has less library code linked in - needs to be small
-# in order to be able to max out the proc table.
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_forktest user/forktest.o user/ulib.o user/usys.o
-aarch64-none-elf-objdump -S user/_forktest > user/forktest.asm
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/grep.o user/grep.c
- 
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_grep user/grep.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
-aarch64-none-elf-objdump -S user/_grep > user/grep.asm
-aarch64-none-elf-objdump -t user/_grep | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/grep.sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/init.o user/init.c
- 
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_init user/init.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
-aarch64-none-elf-objdump -S user/_init > user/init.asm
-aarch64-none-elf-objdump -t user/_init | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/init.sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/kill.o user/kill.c
- 
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_kill user/kill.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
-aarch64-none-elf-objdump -S user/_kill > user/kill.asm
-aarch64-none-elf-objdump -t user/_kill | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/kill.sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/ln.o user/ln.c
- 
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_ln user/ln.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
-aarch64-none-elf-objdump -S user/_ln > user/ln.asm
-aarch64-none-elf-objdump -t user/_ln | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/ln.sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/ls.o user/ls.c
- 
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_ls user/ls.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
-aarch64-none-elf-objdump -S user/_ls > user/ls.asm
-aarch64-none-elf-objdump -t user/_ls | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/ls.sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/mkdir.o user/mkdir.c
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_mkdir user/mkdir.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
-aarch64-none-elf-objdump -S user/_mkdir > user/mkdir.asm
- 
-aarch64-none-elf-objdump -t user/_mkdir | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/mkdir.sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/rm.o user/rm.c
- 
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_rm user/rm.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
-aarch64-none-elf-objdump -S user/_rm > user/rm.asm
-aarch64-none-elf-objdump -t user/_rm | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/rm.sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/sh.o user/sh.c
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_sh user/sh.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
-aarch64-none-elf-objdump -S user/_sh > user/sh.asm
- 
-aarch64-none-elf-objdump -t user/_sh | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/sh.sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/stressfs.o user/stressfs.c
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_stressfs user/stressfs.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
- 
-aarch64-none-elf-objdump -S user/_stressfs > user/stressfs.asm
-aarch64-none-elf-objdump -t user/_stressfs | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/stressfs.sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/usertests.o user/usertests.c
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_usertests user/usertests.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o
-aarch64-none-elf-objdump -S user/_usertests > .asm
-aarch64-none-elf-objdump -t user/_usertests | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > .sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/grind.o user/grind.c
- 
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_grind user/grind.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o
-aarch64-none-elf-objdump -S user/_grind > .asm
-aarch64-none-elf-objdump -t user/_grind | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > .sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/wc.o user/wc.c
- 
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_wc user/wc.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
-aarch64-none-elf-objdump -S user/_wc > user/wc.asm
-aarch64-none-elf-objdump -t user/_wc | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/wc.sym
- 
-aarch64-none-elf-gcc -Wall -Werror  -fno-omit-frame-pointer -ggdb -MD -ffreestanding -fno-common -nostdlib -I. -fno-stack-protector -fno-pie -no-pie   -c -o user/zombie.o user/zombie.c
- 
-aarch64-none-elf-ld -z max-page-size=4096 -N -e main -Ttext 0 -o user/_zombie user/zombie.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/string.o user/rand.o
-aarch64-none-elf-objdump -S user/_zombie > user/zombie.asm
-aarch64-none-elf-objdump -t user/_zombie | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > user/zombie.sym
-mkfs/mkfs fs.img README user/_cat user/_echo user/_forktest user/_grep user/_init user/_kill user/_ln user/_ls user/_mkdir user/_rm user/_sh user/_stressfs user/_usertests user/_grind user/_wc user/_zombie 
-aarch64-none-elf-ld -z max-page-size=4096 -T kernel/kernel.ld -o kernel/kernel kernel/entry.o kernel/swtch.o kernel/trampoline.o kernel/kernelvec.o kernel-rs/target/aarch64-unknown-none/debug/librv6_kernel.a -b binary user/initcode fs.img 
+aarch64-none-elf-ld -z max-page-size=4096 -T kernel/kernel.ld -o kernel/kernel kernel/entry.o kernel/swtch.o kernel/trampoline.o kernel/kernelvec.o kernel/trap_asm.o kernel-rs/target/aarch64-unknown-none/debug/librv6_kernel.a -b binary user/initcode fs.img 
 aarch64-none-elf-objdump -S kernel/kernel > kernel/kernel.asm
 aarch64-none-elf-objdump -t kernel/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > kernel/kernel.sym
+ 
 make: Leaving directory '/kaist-cp-home/sunghwan.shim/rv6-ARM'
  

@@ -49,6 +49,7 @@ OBJS = \
   $K/swtch.o \
   $K/trampoline.o \
   $K/kernelvec.o \
+  $K/trap_asm.o \
   $(KR)/target/$(RUST_TARGET)/$(RUST_MODE)/librv6_kernel.a
 
 # riscv64-unknown-elf- or riscv64-linux-gnu-

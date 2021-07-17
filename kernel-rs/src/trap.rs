@@ -44,6 +44,90 @@ pub unsafe extern "C" fn usertrap() {
     unsafe { kernel_ctx(|ctx| ctx.user_trap()) };
 }
 
+#[no_mangle]
+pub unsafe extern "C" fn swi_handler() {
+    // SAFETY
+    // TODO
+    // unsafe { kernel_ctx(|ctx| ctx.swi_handler())};
+    unsafe { kernel_ctx(|ctx| ctx.user_trap()) };
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn irq_handler() {
+    // SAFETY
+    // TODO
+    // unsafe { kernel_ctx(|ctx| ctx.swi_handler())};
+    unsafe { kernel_ctx(|ctx| ctx.user_trap()) };
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn dabort_handler() {
+    // SAFETY
+    // TODO
+    // unsafe { kernel_ctx(|ctx| ctx.swi_handler())};
+    unsafe { kernel_ctx(|ctx| ctx.user_trap()) };
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn iabort_handler() {
+    // SAFETY
+    // TODO
+    // unsafe { kernel_ctx(|ctx| ctx.swi_handler())};
+    unsafe { kernel_ctx(|ctx| ctx.user_trap()) };
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn reset_handler() {
+    // SAFETY
+    // TODO
+    // unsafe { kernel_ctx(|ctx| ctx.swi_handler())};
+    unsafe { kernel_ctx(|ctx| ctx.user_trap()) };
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn und_handler() {
+    // SAFETY
+    // TODO
+    // unsafe { kernel_ctx(|ctx| ctx.swi_handler())};
+    unsafe { kernel_ctx(|ctx| ctx.user_trap()) };
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn na_handler() {
+    // SAFETY
+    // TODO
+    // unsafe { kernel_ctx(|ctx| ctx.swi_handler())};
+    unsafe { kernel_ctx(|ctx| ctx.user_trap()) };
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn fiq_handler() {
+    // SAFETY
+    // TODO
+    unsafe { kernel_ctx(|ctx| ctx.user_trap()) };
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn bad_handler() {
+    // SAFETY
+    // TODO
+    unsafe { kernel_ctx(|ctx| ctx.user_trap()) };
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn error_handler() {
+    // SAFETY
+    // TODO
+    unsafe { kernel_ctx(|ctx| ctx.user_trap()) };
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn default_handler() {
+    // SAFETY
+    // TODO
+    unsafe { kernel_ctx(|ctx| ctx.user_trap()) };
+}
+
 /// Interrupts and exceptions from kernel code go here via kernelvec,
 /// on whatever the current kernel stack is.
 #[no_mangle]

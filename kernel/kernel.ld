@@ -8,7 +8,12 @@ SECTIONS
    * ensure that entry.S / _entry is at 0x80000000,
    * where qemu's -kernel jumps.
    */
-  . = 0x80000000;
+  . = 0x40010000;
+
+
+
+  
+  __boot_core_stack_end_exclusive = .;
 
   .text : {
     *(.text .text.*)

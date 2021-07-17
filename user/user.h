@@ -35,8 +35,8 @@ int getpagesize(void);
 int waitpid(int pid, int *stat_loc, int options);
 int getppid(void);
 off_t lseek(int fildes, off_t offset, int whence);
-int gettimeofday(struct timeval *__restrict__ tp,
-                struct timezone *__restrict__ tzp);
+// int gettimeofday(struct timeval *__restrict__ tp,
+//                 struct timezone *__restrict__ tzp);
 
 // ulib.c
 int stat(const char*, struct stat*);
@@ -56,9 +56,9 @@ int memcmp(const void *, const void *, uint);
 void *memcpy(void *, const void *, uint);
 
 // newly added ulibs
-int posix_select(int nfds, fd_set *restrict readfds,
-            fd_set *restrict writefds, fd_set *restrict exceptfds,
-            struct timeval* timeout);
+// int posix_select(int nfds, fd_set *restrict readfds,
+//             fd_set *restrict writefds, fd_set *restrict exceptfds,
+//             struct timeval* timeout);
 void usleep(unsigned long useconds);
 
 // <signal.h>
@@ -99,7 +99,7 @@ void assert(int expression);
 int isdigit(int arg);
 
 
-int creat(const char *path, mode_t mode);
+// int creat(const char *path, mode_t mode);
 char *strdup(const char *s);
 int execlp(const char *file, const char *arg, .../*, (char *) NULL */);
 int execve(const char *pathname, char *const argv[],

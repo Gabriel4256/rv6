@@ -1,5 +1,5 @@
-#include <bits/types/struct_timeval.h>
-#include <bits/types.h>
+// #include <bits/types/struct_timeval.h>
+// #include <bits/types.h>
 
 #ifndef TYPES_H_
 #define TYPES_H_
@@ -63,7 +63,7 @@ struct timezone {
 	int	tz_dsttime;	/* type of dst correction */
 };
 
-typedef __mode_t mode_t;
+// typedef __mode_t mode_t;
 
 
 

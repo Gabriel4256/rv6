@@ -6,6 +6,8 @@ use crate::{
     },
     kernel::main,
     param::NCPU,
+    arch::arm_virt::*,
+    uart::Uart
 };
 
 extern "C" {
@@ -32,6 +34,10 @@ static mut TIMER_SCRATCH: [[usize; NCPU]; 5] = [[0; NCPU]; 5];
 /// entry.S jumps here in machine mode on stack0.
 #[no_mangle]
 pub unsafe fn start() {
+    for i in 0..10 {
+        uart_putc('a' as u8);
+    }
+
     // set M Previous Privilege mode to Supervisor, for mret.
     // let mut x = Mstatus::read();
     // x.remove(Mstatus::MPP_MASK);
@@ -63,6 +69,9 @@ pub unsafe fn start() {
     //     // switch to supervisor mode and jump to main().
     //     asm!("mret");
     // }
+    unsafe {
+        main();
+    }
 }
 
 /// set up to receive timer interrupts in machine mode,
@@ -97,4 +106,12 @@ unsafe fn timerinit() {
     let mut y = MIE::read();
     y.insert(MIE::MTIE);
     unsafe { y.write() };
+}
+
+fn uart_putc(c: u8)
+{
+    let ptr: *mut u8 = UART0 as *mut u8;
+
+    let u_art = unsafe { Uart::new(UART0) } ;
+    u_art.putc(c);
 }

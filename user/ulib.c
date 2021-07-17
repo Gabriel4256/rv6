@@ -279,11 +279,11 @@ int fsync(int fildes)
 //   return 0;
 // }
 
-int gettimeofday(struct timeval *__restrict__ tp, 
-                struct timezone *__restrict__ tzp)
-{
-  return 0;
-}
+// int gettimeofday(struct timeval *__restrict__ tp, 
+//                 struct timezone *__restrict__ tzp)
+// {
+//   return 0;
+// }
 
 int * __errno_location(void){
   return 0;
@@ -304,21 +304,21 @@ void usleep(unsigned long useconds) {
   sleep(useconds / 100000);
 }
 
-int creat(const char *path, mode_t mode){
-  return open(path, O_CREATE | O_WRONLY | O_TRUNC);
-}
+// int creat(const char *path, mode_t mode){
+//   return open(path, O_CREATE | O_WRONLY | O_TRUNC);
+// }
 
 int rmdir(const char *pathname) {
   return unlink(pathname);
 }
 
-int posix_select(int nfds, fd_set *restrict readfds,
-            fd_set *restrict writefds, fd_set *restrict exceptfds,
-            struct timeval* timeout)
-{
-  long time = timeout->tv_sec * 10 + timeout->tv_usec / 1e5;
-  return select(nfds, readfds, writefds, exceptfds, time);                
-}
+// int posix_select(int nfds, fd_set *restrict readfds,
+//             fd_set *restrict writefds, fd_set *restrict exceptfds,
+//             struct timeval* timeout)
+// {
+//   long time = timeout->tv_sec * 10 + timeout->tv_usec / 1e5;
+//   return select(nfds, readfds, writefds, exceptfds, time);                
+// }
 
 #define CHAR_BIT 8
 /* Discontinue quicksort algorithm when partition gets below this size.

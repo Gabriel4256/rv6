@@ -9,6 +9,7 @@ use crate::{
     param::NCPU,
     arch::arm_virt::*,
     uart::Uart,
+    arch::memlayout::UART0,
 };
 
 use cortex_a::{asm::barrier, registers::*};
@@ -75,7 +76,7 @@ pub unsafe fn start() {
         MAIR_EL1::Attr0_Device::nonGathering_nonReordering_EarlyWriteAck,
     );
     
-    // configure transaltion control register
+    // set translation control register
     TCR_EL1.write(
         TCR_EL1::TBI1::Used
         + TCR_EL1::IPS::Bits_44 // intermediate physical address = 44bits
@@ -101,11 +102,11 @@ pub unsafe fn start() {
 
     // set system contol register
     // Enable the MMU and turn on data and instruction caching.
-    _puts("Setting System Control Register (SCTLR_EL1)\n");
-    SCTLR_EL1.modify(SCTLR_EL1::M::Enable + SCTLR_EL1::C::Cacheable + SCTLR_EL1::I::Cacheable);
+    // _puts("Setting System Control Register (SCTLR_EL1)\n");
+    // SCTLR_EL1.modify(SCTLR_EL1::M::Enable + SCTLR_EL1::C::Cacheable + SCTLR_EL1::I::Cacheable);
 
     // Force MMU init to complete before next instruction.
-    unsafe { barrier::isb(barrier::SY) } ;
+    // unsafe { barrier::isb(barrier::SY) } ;
 
     unsafe {
         main();
@@ -155,8 +156,6 @@ fn _puts(s: &str)
 
 fn uart_putc(c: u8)
 {
-    let ptr: *mut u8 = UART0 as *mut u8;
-
     let u_art = unsafe { Uart::new(UART0) } ;
     u_art.putc(c);
 }

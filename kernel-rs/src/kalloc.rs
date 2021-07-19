@@ -89,6 +89,7 @@ impl Kmem {
         // SAFETY: safe to acquire only the address of a static variable.
         let pa_start = pgroundup(unsafe { end.as_ptr() as usize });
         let pa_end = pgrounddown(PHYSTOP);
+
         for pa in num_iter::range_step(pa_start, pa_end, PGSIZE) {
             // SAFETY:
             // * pa_start is a multiple of PGSIZE, and pa is so

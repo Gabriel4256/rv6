@@ -14,7 +14,7 @@ pub const DEVBASE3:usize = 0x0a000000;
 pub const DEV_MEM_SZ:usize = 0x01000000;
 
 
-pub const UART0:usize = 0x09000000;
+// pub const UART0:usize = 0x09000000;
 pub const UART_CLK:usize = 24000000;    // Clock rate for pub const
 
 pub const TIMER0:usize = 0x1c110000;

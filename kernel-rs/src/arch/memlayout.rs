@@ -25,11 +25,11 @@ use crate::arch::addr::{MAXVA, PGSIZE};
 pub const FINISHER: usize = 0x100000;
 
 /// qemu puts UART registers here in physical memory.
-pub const UART0: usize = 0x10000000;
+pub const UART0: usize = 0x09000000;
 pub const UART0_IRQ: usize = 10;
 
 /// virtio mmio interface
-pub const VIRTIO0: usize = 0x10001000;
+pub const VIRTIO0: usize = 0x0a000000;
 pub const VIRTIO0_IRQ: usize = 1;
 
 /// core local interruptor (CLINT), which contains the timer.
@@ -64,7 +64,7 @@ pub const fn plic_sclaim(hart: usize) -> usize {
 /// the kernel expects there to be RAM
 /// for use by the kernel and user pages
 /// from physical address 0x80000000 to PHYSTOP.
-pub const KERNBASE: usize = 0x80000000;
+pub const KERNBASE: usize = 0x40000000;
 pub const PHYSTOP: usize = KERNBASE.wrapping_add(128 * 1024 * 1024);
 
 /// map the trampoline page to the highest address,

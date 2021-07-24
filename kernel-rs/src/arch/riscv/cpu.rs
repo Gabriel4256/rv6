@@ -7,8 +7,8 @@ use core::{
 use array_macro::array;
 
 use crate::{
-    arch::riscv::r_tp,
-    arch::riscv::{intr_get, intr_off, intr_on},
+    arch::asm::r_tp,
+    arch::asm::{intr_get, intr_off, intr_on},
     param::NCPU,
     proc::{Context, Proc},
 };

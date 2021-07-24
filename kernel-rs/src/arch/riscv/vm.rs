@@ -10,7 +10,7 @@ use crate::{
     arch::memlayout::{
         kstack, FINISHER, KERNBASE, PHYSTOP, PLIC, TRAMPOLINE, TRAPFRAME, UART0, VIRTIO0,
     },
-    arch::riscv::{make_satp, sfence_vma, w_satp},
+    arch::asm::{make_satp, sfence_vma, w_satp},
     fs::{FileSystem, InodeGuard, Ufs},
     kalloc::Kmem,
     lock::SpinLock,

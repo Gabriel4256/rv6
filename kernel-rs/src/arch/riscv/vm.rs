@@ -7,10 +7,10 @@ use crate::{
     arch::addr::{
         pa2pte, pgrounddown, pgroundup, pte2pa, Addr, KVAddr, PAddr, UVAddr, VAddr, MAXVA, PGSIZE,
     },
+    arch::asm::{make_satp, sfence_vma, w_satp},
     arch::memlayout::{
         kstack, FINISHER, KERNBASE, PHYSTOP, PLIC, TRAMPOLINE, TRAPFRAME, UART0, VIRTIO0,
     },
-    arch::asm::{make_satp, sfence_vma, w_satp},
     fs::{FileSystem, InodeGuard, Ufs},
     kalloc::Kmem,
     lock::SpinLock,

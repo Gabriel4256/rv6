@@ -13,8 +13,8 @@ use pin_project::pin_project;
 use super::*;
 use crate::{
     arch::addr::{Addr, UVAddr, PGSIZE},
-    arch::memlayout::kstack,
     arch::asm::intr_on,
+    arch::memlayout::kstack,
     arch::proc::INITCODE,
     fs::FileSystem,
     hal::hal,

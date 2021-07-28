@@ -7,7 +7,7 @@ use itertools::*;
 use zerocopy::{AsBytes, FromBytes};
 
 use crate::{
-    arch::addr::{pgroundup, PAddr, PGSIZE},
+    addr::{pgroundup, PAddr, PGSIZE},
     fs::{FileSystem, Path},
     hal::hal,
     page::Page,

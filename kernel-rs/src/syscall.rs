@@ -10,10 +10,8 @@ use arrayvec::ArrayVec;
 use cstr_core::CStr;
 
 use crate::{
-    arch::{
-        addr::{Addr, UVAddr},
-        poweroff,
-    },
+    addr::{Addr, UVAddr},
+    arch::poweroff,
     file::RcFile,
     fs::{FcntlFlags, FileSystem, InodeType, Path},
     hal::hal,

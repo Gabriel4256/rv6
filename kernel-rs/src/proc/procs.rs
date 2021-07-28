@@ -12,7 +12,7 @@ use pin_project::pin_project;
 
 use super::*;
 use crate::{
-    arch::addr::{Addr, UVAddr, PGSIZE},
+    addr::{Addr, UVAddr, PGSIZE},
     arch::asm::intr_on,
     arch::memlayout::kstack,
     arch::proc::INITCODE,

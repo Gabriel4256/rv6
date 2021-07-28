@@ -79,7 +79,7 @@ use zerocopy::{AsBytes, FromBytes};
 
 use super::{FileName, Path, Stat, UfsTx, IPB, MAXFILE, NDIRECT, NINDIRECT, ROOTINO};
 use crate::{
-    arch::addr::UVAddr,
+    addr::UVAddr,
     arena::{Arena, ArenaObject, ArrayArena},
     bio::BufData,
     fs::{Inode, InodeGuard, InodeType, Itable, RcInode},

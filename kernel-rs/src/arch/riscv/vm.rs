@@ -1,29 +1,17 @@
-use core::{cmp, marker::PhantomData, mem, pin::Pin, slice};
+use core::pin::Pin;
 
 use bitflags::bitflags;
-use zerocopy::{AsBytes, FromBytes};
 
 use crate::{
-    addr::{
-        pa2pte, pte2pa, KVAddr, PAddr, UVAddr, VAddr, MAXVA, PGSIZE,
-    },
+    addr::{pa2pte, pte2pa, PAddr, VAddr, PGSIZE},
     arch::asm::{make_satp, sfence_vma, w_satp},
-    arch::memlayout::{
-        kstack, FINISHER, KERNBASE, PHYSTOP, PLIC, TRAMPOLINE, TRAPFRAME, UART0, VIRTIO0,
-    },
-    fs::{FileSystem, InodeGuard, Ufs},
+    arch::memlayout::{FINISHER, PLIC, TRAMPOLINE, TRAPFRAME, UART0, VIRTIO0},
     kalloc::Kmem,
     lock::SpinLock,
-    page::Page,
-    param::NPROC,
-    proc::KernelCtx,
-    vm::{PageTableEntry, PageInit, PteFlags, AccessFlags, RawPageTable, PageTable},
+    vm::{AccessFlags, PageInit, PageTable, PageTableEntry, PteFlags, RawPageTable},
 };
 
 extern "C" {
-    // kernel.ld sets this to end of kernel code.
-    static mut etext: [u8; 0];
-
     // trampoline.S
     static mut trampoline: [u8; 0];
 }
@@ -48,7 +36,7 @@ impl PteFlags for PteFlagsImpl {
         let mut ret = Self::empty();
         if f.intersects(AccessFlags::R) {
             ret |= Self::R;
-        } 
+        }
         if f.intersects(AccessFlags::W) {
             ret |= Self::W;
         }
@@ -96,11 +84,14 @@ impl PageTableEntry for PageTableEntryImpl {
     }
 
     fn is_table(&self) -> bool {
-        self.is_valid() && !self.flag_intersects(Self::EntryFlags::R | Self::EntryFlags::W | Self::EntryFlags::X)
+        self.is_valid()
+            && !self
+                .flag_intersects(Self::EntryFlags::R | Self::EntryFlags::W | Self::EntryFlags::X)
     }
 
     fn is_data(&self) -> bool {
-        self.is_valid() && self.flag_intersects(Self::EntryFlags::R | Self::EntryFlags::W | Self::EntryFlags::X)
+        self.is_valid()
+            && self.flag_intersects(Self::EntryFlags::R | Self::EntryFlags::W | Self::EntryFlags::X)
     }
 
     /// Make the entry refer to a given page-table page.
@@ -111,12 +102,12 @@ impl PageTableEntry for PageTableEntryImpl {
     /// Make the entry refer to a given address with a given permission.
     /// The permission should include at lease one of R, W, and X not to be
     /// considered as an entry referring a page-table page.
-    fn set_entry(&mut self, pa: PAddr, perm: Self::Self::EntryFlags) {
+    fn set_entry(&mut self, pa: PAddr, perm: Self::EntryFlags) {
         assert!(perm.intersects(Self::EntryFlags::R | Self::EntryFlags::W | Self::EntryFlags::X));
         self.inner = pa2pte(pa) | (perm | Self::EntryFlags::V).bits();
     }
 
-    /// Make the entry inaccessible by user processes by clearing PteFlags::U.
+    /// Make the entry inaccessible by user processes by clearing PteFlagsImpl::U.
     fn clear_user(&mut self) {
         self.inner &= !(Self::EntryFlags::U.bits());
     }
@@ -130,91 +121,88 @@ impl PageTableEntry for PageTableEntryImpl {
 pub struct PageInitImpl {}
 
 impl PageInit for PageInitImpl {
-    fn user_page_init(page_table: &mut PageTable, trap_frame: PAddr, allocator: Pin<&SpinLock<Kmem>>) {
+    fn user_page_init<A: VAddr>(
+        page_table: &mut PageTable<A>,
+        trap_frame: PAddr,
+        allocator: Pin<&SpinLock<Kmem>>,
+    ) -> Result<(), ()> {
         // Map the trampoline code (for system call return)
         // at the highest user virtual address.
         // Only the supervisor uses it, on the way
         // to/from user space, so not PTE_U.
-        page_table
-            .insert(
-                TRAMPOLINE.into(),
-                // SAFETY: we assume that reading the address of trampoline is safe.
-                (unsafe { trampoline.as_mut_ptr() as usize }).into(),
-                PteFlags::R | PteFlags::X,
-                allocator,
-            )
-            .ok()?;
+        page_table.insert(
+            TRAMPOLINE.into(),
+            // SAFETY: we assume that reading the address of trampoline is safe.
+            (unsafe { trampoline.as_mut_ptr() as usize }).into(),
+            PteFlagsImpl::R | PteFlagsImpl::X,
+            allocator,
+        )?;
 
         // Map the trapframe just below TRAMPOLINE, for trampoline.S.
-        page_table
-            .insert(
-                TRAPFRAME.into(),
-                trap_frame,
-                PteFlags::R | PteFlags::W,
-                allocator,
-            )
-            .ok()?;
+        page_table.insert(
+            TRAPFRAME.into(),
+            trap_frame,
+            PteFlagsImpl::R | PteFlagsImpl::W,
+            allocator,
+        )?;
+
+        Ok(())
     }
 
-    fn kernel_page_init(page_table: &mut impl PageTable, allocator: Pin<&SpinLock<Kmem>>) {
-// SiFive Test Finisher MMIO
-page_table
-.insert_range(
-    FINISHER.into(),
-    PGSIZE,
-    FINISHER.into(),
-    PteFlags::R | PteFlags::W,
-    allocator,
-)
-.ok()?;
+    fn kernel_page_init<A: VAddr>(
+        page_table: &mut PageTable<A>,
+        allocator: Pin<&SpinLock<Kmem>>,
+    ) -> Result<(), ()> {
+        // SiFive Test Finisher MMIO
+        page_table.insert_range(
+            FINISHER.into(),
+            PGSIZE,
+            FINISHER.into(),
+            PteFlagsImpl::R | PteFlagsImpl::W,
+            allocator,
+        )?;
 
-// Uart registers
-page_table
-.insert_range(
-    UART0.into(),
-    PGSIZE,
-    UART0.into(),
-    PteFlags::R | PteFlags::W,
-    allocator,
-)
-.ok()?;
+        // Uart registers
+        page_table.insert_range(
+            UART0.into(),
+            PGSIZE,
+            UART0.into(),
+            PteFlagsImpl::R | PteFlagsImpl::W,
+            allocator,
+        )?;
 
-// Virtio mmio disk interface
-page_table
-.insert_range(
-    VIRTIO0.into(),
-    PGSIZE,
-    VIRTIO0.into(),
-    PteFlags::R | PteFlags::W,
-    allocator,
-)
-.ok()?;
+        // Virtio mmio disk interface
+        page_table.insert_range(
+            VIRTIO0.into(),
+            PGSIZE,
+            VIRTIO0.into(),
+            PteFlagsImpl::R | PteFlagsImpl::W,
+            allocator,
+        )?;
 
-// PLIC
-page_table
-.insert_range(
-    PLIC.into(),
-    0x400000,
-    PLIC.into(),
-    PteFlags::R | PteFlags::W,
-    allocator,
-)
-.ok()?;
+        // PLIC
+        page_table.insert_range(
+            PLIC.into(),
+            0x400000,
+            PLIC.into(),
+            PteFlagsImpl::R | PteFlagsImpl::W,
+            allocator,
+        )?;
         // Map the trampoline for trap entry/exit to
         // the highest virtual address in the kernel.
-        page_table
-            .insert_range(
-                TRAMPOLINE.into(),
-                PGSIZE,
-                // SAFETY: we assume that reading the address of trampoline is safe.
-                unsafe { trampoline.as_mut_ptr() as usize }.into(),
-                PteFlags::R | PteFlags::X,
-                allocator,
-            )
-            .ok()?;
+        page_table.insert_range(
+            TRAMPOLINE.into(),
+            PGSIZE,
+            // SAFETY: we assume that reading the address of trampoline is safe.
+            unsafe { trampoline.as_mut_ptr() as usize }.into(),
+            PteFlagsImpl::R | PteFlagsImpl::X,
+            allocator,
+        )?;
+
+        Ok(())
     }
 
-    unsafe fn switch_page_table_and_enable_mmu(page_table_base: usize){
+    unsafe fn switch_page_table_and_enable_mmu(page_table_base: usize) {
         unsafe {
             w_satp(make_satp(page_table_base));
             sfence_vma();

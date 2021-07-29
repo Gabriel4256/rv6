@@ -82,6 +82,7 @@ cfg_if! {
     }
 }
 
+mod addr;
 mod arena;
 mod bio;
 mod console;
@@ -100,5 +101,4 @@ mod proc;
 mod syscall;
 mod util;
 mod virtio;
-mod addr;
 mod vm;

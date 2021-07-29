@@ -5,9 +5,11 @@ use bitflags::bitflags;
 use crate::{
     addr::{pa2pte, pte2pa, PAddr, VAddr, PGSIZE},
     arch::asm::{make_satp, sfence_vma, w_satp},
-    arch::memlayout::{FINISHER, PLIC, TRAMPOLINE, TRAPFRAME, UART0, VIRTIO0},
+    arch::memlayout::MemLayoutImpl,
+    arch::memlayout::{FINISHER, PLIC, TRAMPOLINE},
     kalloc::Kmem,
     lock::SpinLock,
+    memlayout::MemLayout,
     vm::{AccessFlags, PageInit, PageTable, PageTableEntry, PteFlags, RawPageTable},
 };
 
@@ -140,7 +142,7 @@ impl PageInit for PageInitImpl {
 
         // Map the trapframe just below TRAMPOLINE, for trampoline.S.
         page_table.insert(
-            TRAPFRAME.into(),
+            MemLayoutImpl::TRAPFRAME.into(),
             trap_frame,
             PteFlagsImpl::R | PteFlagsImpl::W,
             allocator,
@@ -164,18 +166,18 @@ impl PageInit for PageInitImpl {
 
         // Uart registers
         page_table.insert_range(
-            UART0.into(),
+            MemLayoutImpl::UART0.into(),
             PGSIZE,
-            UART0.into(),
+            MemLayoutImpl::UART0.into(),
             PteFlagsImpl::R | PteFlagsImpl::W,
             allocator,
         )?;
 
         // Virtio mmio disk interface
         page_table.insert_range(
-            VIRTIO0.into(),
+            MemLayoutImpl::VIRTIO0.into(),
             PGSIZE,
-            VIRTIO0.into(),
+            MemLayoutImpl::VIRTIO0.into(),
             PteFlagsImpl::R | PteFlagsImpl::W,
             allocator,
         )?;

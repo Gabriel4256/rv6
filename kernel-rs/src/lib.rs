@@ -66,8 +66,6 @@ cfg_if! {
         mod trap;
         #[path = "arch/riscv/uart.rs"]
         mod uart;
-        // #[path = "arch/riscv/vm.rs"]
-        // mod vm;
     } else if #[cfg(target_arch = "aarch64")] {
         #[path = "arch/arm/mod.rs"]
         mod arch;
@@ -77,8 +75,6 @@ cfg_if! {
         mod trap;
         #[path = "arch/arm/uart.rs"]
         mod uart;
-        // #[path = "arch/arm/vm.rs"]
-        // mod vm;
     }
 }
 
@@ -94,6 +90,7 @@ mod hal;
 mod kalloc;
 mod kernel;
 mod lock;
+mod memlayout;
 mod page;
 mod param;
 mod pipe;
